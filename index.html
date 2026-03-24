@@ -1,95 +1,146 @@
 <!DOCTYPE html>
-<html lang="el">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Stella Info</title>
+    <title>Stella Name Info</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         body {
-            margin: 0; padding: 20px; font-family: sans-serif;
-            background: #1a2a6c;
+            margin: 0; padding: 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(180deg, #1a2a6c 0%, #b21f1f 50%, #fdbb2d 100%);
-            background-attachment: fixed; color: white;
-            display: flex; justify-content: center;
+            background-attachment: fixed; color: white; display: flex; justify-content: center;
         }
-        .card {
-            width: 100%; max-width: 350px; background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            border-radius: 25px; padding: 20px; text-align: center;
-            border: 1px solid rgba(255,255,255,0.3);
-        }
-        .flags { margin-bottom: 20px; display: flex; justify-content: center; gap: 15px; }
-        .flag-btn { font-size: 30px; cursor: pointer; opacity: 0.4; transition: 0.2s; -webkit-tap-highlight-color: transparent; }
-        .flag-btn.active { opacity: 1; transform: scale(1.2); }
-        
-        h1 { color: #D4AF37; letter-spacing: 2px; margin: 10px 0; }
-        .intro-box {
-            background: rgba(0,0,0,0.3); padding: 15px; border-radius: 15px;
-            border-left: 4px solid #D4AF37; text-align: left; font-style: italic;
-            line-height: 1.5; margin-bottom: 20px;
-        }
-        .item-btn {
-            background: rgba(255,255,255,0.1); margin-bottom: 10px; padding: 18px;
-            border-radius: 15px; border: 1px solid #D4AF37;
-            display: flex; align-items: center; gap: 12px;
-            cursor: pointer; font-weight: bold; -webkit-tap-highlight-color: transparent;
-        }
-        .item-btn i { color: #D4AF37; font-size: 1.2rem; pointer-events: none; }
-        .item-btn span { pointer-events: none; }
 
-        /* MODAL SYSTEM */
+        .card {
+            width: 100%; max-width: 360px;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border-radius: 25px; padding: 25px; border: 1px solid rgba(255,255,255,0.2);
+            text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+        }
+
+        .flags-row { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; }
+        .flag-btn { font-size: 30px; cursor: pointer; filter: grayscale(0.8); transition: 0.3s; -webkit-tap-highlight-color: transparent; }
+        .flag-btn.active { filter: grayscale(0); transform: scale(1.2); }
+
+        h1 { color: #D4AF37; letter-spacing: 3px; margin: 15px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); font-size: 2.2rem; }
+
+        .intro {
+            background: rgba(0,0,0,0.4); padding: 18px; border-radius: 15px;
+            border-left: 5px solid #D4AF37; font-style: italic; text-align: left;
+            line-height: 1.6; margin-bottom: 25px; font-size: 0.95rem; box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        /* Τα κουμπιά που ΔΟΥΛΕΥΟΥΝ */
+        .menu-btn {
+            background: rgba(255,255,255,0.1); width: 100%; border: 1px solid rgba(212, 175, 55, 0.5);
+            padding: 16px; margin-bottom: 12px; border-radius: 15px; color: white;
+            font-weight: bold; font-size: 1rem; cursor: pointer; display: flex;
+            align-items: center; gap: 12px; transition: 0.2s; -webkit-tap-highlight-color: transparent;
+        }
+        .menu-btn:active { background: rgba(212, 175, 55, 0.3); }
+        .menu-btn i { color: #D4AF37; width: 20px; font-size: 1.1rem; pointer-events: none; }
+        .menu-btn span { pointer-events: none; }
+
+        /* Pop-up Overlay */
         #overlay {
             display: none; position: fixed; top: 0; left: 0;
             width: 100%; height: 100%; background: rgba(0,0,0,0.9);
-            z-index: 10000; justify-content: center; align-items: center;
+            z-index: 99999; justify-content: center; align-items: center;
         }
         .popup {
-            background: white; color: #222; width: 85%; max-width: 300px;
-            border-radius: 20px; position: relative; overflow: hidden;
-            animation: popIn 0.2s ease-out;
+            background: white; color: #222; width: 85%; max-width: 320px;
+            border-radius: 20px; overflow: hidden; position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
         }
-        @keyframes popIn { from {transform: scale(0.8); opacity: 0;} to {transform: scale(1); opacity: 1;} }
-        .p-head { background: #1a2a6c; color: white; padding: 15px; font-weight: bold; }
-        .p-body { padding: 20px; line-height: 1.6; font-size: 1.1rem; }
-        .close-x {
-            position: absolute; top: 10px; right: 15px; color: white;
-            font-size: 28px; cursor: pointer; z-index: 10001; font-weight: bold;
+        .p-head { 
+            background: linear-gradient(to right, #1a2a6c, #801313); 
+            color: white; padding: 20px; font-weight: bold; font-size: 1.1rem;
+        }
+        .p-text { padding: 25px; line-height: 1.7; font-size: 1.05rem; }
+        .x-close {
+            position: absolute; top: 12px; right: 15px; color: white;
+            font-size: 32px; cursor: pointer; line-height: 1; z-index: 100000;
         }
     </style>
 </head>
 <body>
 
     <div class="card">
-        <div class="flags">
-            <span id="f-el" class="flag-btn active" onclick="chL('el')" ontouchstart="chL('el')">🇬🇷</span>
-            <span id="f-en" class="flag-btn" onclick="chL('en')" ontouchstart="chL('en')">🇬🇧</span>
-            <span id="f-fr" class="flag-btn" onclick="chL('fr')" ontouchstart="chL('fr')">🇫🇷</span>
-            <span id="f-de" class="flag-btn" onclick="chL('de')" ontouchstart="chL('de')">🇩🇪</span>
+        <div class="flags-row">
+            <span id="f-el" class="flag-btn active" onclick="L('el')">🇬🇷</span>
+            <span id="f-en" class="flag-btn" onclick="L('en')">🇬🇧</span>
+            <span id="f-fr" class="flag-btn" onclick="L('fr')">🇫🇷</span>
+            <span id="f-de" class="flag-btn" onclick="L('de')">🇩🇪</span>
         </div>
 
-        <h1 id="txt-name">ΣΤΕΛΑ</h1>
-        <div id="txt-intro" class="intro-box">
+        <h1 id="txt-n">ΣΤΕΛΑ</h1>
+        
+        <p id="txt-i" class="intro">
             "Στέλα: Το άστρο της αυγής. Ένα όνομα που ακτινοβολεί λάμψη, συμβολίζοντας την καθοδήγηση, την ελπίδα και την αιώνια ομορφιά του ουρανού."
-        </div>
+        </p>
 
-        <div class="item-btn" onclick="shP(0)" ontouchstart="shP(0)"><i class="fas fa-scroll"></i> <span id="b0">Ετυμολογία & Σημασία</span></div>
-        <div class="item-btn" onclick="shP(1)" ontouchstart="shP(1)"><i class="fas fa-landmark"></i> <span id="b1">Καλλιτεχνική Αύρα</span></div>
-        <div class="item-btn" onclick="shP(2)" ontouchstart="shP(2)"><i class="fas fa-cross"></i> <span id="b2">Πνευματική Σημασία</span></div>
-        <div class="item-btn" onclick="shP(3)" ontouchstart="shP(3)"><i class="fas fa-sparkles"></i> <span id="b3">Προσωπικότητα</span></div>
+        <button class="menu-btn" onclick="P(0)"><i class="fas fa-scroll"></i> <span id="b0">Ετυμολογία & Σημασία</span></button>
+        <button class="menu-btn" onclick="P(1)"><i class="fas fa-landmark"></i> <span id="b1">Καλλιτεχνική Αύρα</span></button>
+        <button class="menu-btn" onclick="P(2)"><i class="fas fa-cross"></i> <span id="b2">Πνευματική Σημασία</span></button>
+        <button class="menu-btn" onclick="P(3)"><i class="fas fa-sparkles"></i> <span id="b3">Προσωπικότητα</span></button>
     </div>
 
-    <div id="overlay" onclick="clP()" ontouchstart="clP()">
-        <div class="popup" onclick="event.stopPropagation()" ontouchstart="event.stopPropagation()">
-            <div class="close-x" onclick="clP()" ontouchstart="clP()">&times;</div>
-            <div class="p-head" id="p-title">Τίτλος</div>
-            <div class="p-body" id="p-desc">Περιγραφή...</div>
+    <div id="overlay" onclick="C()">
+        <div class="popup" onclick="event.stopPropagation()">
+            <div class="x-close" onclick="C()">&times;</div>
+            <div id="p-title" class="p-head">Τίτλος</div>
+            <div id="p-desc" class="p-text">Περιγραφή...</div>
         </div>
     </div>
 
     <script>
-        var curL = 'el';
-        var db = {
-            el: { n: "ΣΤΕΛΑ", i: '"Στέλα: Το άστρο της αυγής. Ένα όνομα που ακτινοβολεί λάμψη, συμβολίζοντας την καθοδήγηση, την ελπίδα και την αιώνια ομορφιά του ουρανού."', b: ["Ετυμολογία & Σημασία", "Καλλιτεχνική Αύρα", "Πνευματική Σημασία", "Προσωπικότητα"], d: ["Προέρχεται από τη λατινική λέξη 'stella', που σημαίνει 'αστέρι'. Συμβολίζει το φως που καθοδηγεί και τη λάμψη μέσα στο σκοτάδι.", "Συνδεδεμένο με την τέχνη και τον κινηματογράφο, αποπνέει μια αίσθηση διαχρονικής κομψότητας και δύναμης.", "Το αστέρι συμβολίζει τη θεία ελπίδα. Είναι ο φάρος που δείχνει το δρόμο προς την εκπλήρωση των ονείρων.", "Μια Στέλα διακρίνεται για τη λάμψη του χαρακτήρα της και τη δυναμική της παρουσία. Δεν περνά ποτέ απαρατήρητη."] },
-            en: { n: "STELLA", i: '"Stella: The morning star. A name that radiates brilliance, symbolizing guidance, hope, and the eternal beauty of the sky."', b: ["Etymology & Meaning", "Artistic Aura", "Spiritual Meaning", "Personality"], d: ["Derived from the Latin 'stella' (star). It symbolizes the guiding light and brilliance within the darkness.", "Linked to art and cinema, it exudes a sense of timeless elegance and character strength.", "The star symbolizes divine hope. It is the beacon showing the way to fulfill one's dreams.", "A Stella is known for her radiant character and dynamic presence. She never goes unnoticed."] },
-            fr: { n: "STELLA", i: '"Stella : l\'étoile du matin. Un nom qui rayonne d\'éclat, symbolisant la guidance, l\'espoir et la beauté."', b: ["Étymologie", "Aura Artistique", "Signification", "Personnalité"], d: ["Vient du latin 'stella' (étoile). Elle symbolise la lumière qui guide et l'éclat dans l'obscurité.", "Lié à l'art et au cinéma, ce nom dégage une élégance intemporelle και une force de caractère.", "L'
+        var cur = 'el';
+        var data = {
+            el: {
+                n: "ΣΤΕΛΑ",
+                i: '"Στέλα: Το άστρο της αυγής. Ένα όνομα που ακτινοβολεί λάμψη, συμβολίζοντας την καθοδήγηση, την ελπίδα και την αιώνια ομορφιά του ουρανού."',
+                b: ["Ετυμολογία & Σημασία", "Καλλιτεχνική Αύρα", "Πνευματική Σημασία", "Προσωπικότητα"],
+                d: ["Προέρχεται από τη λατινική λέξη 'stella', που σημαίνει 'αστέρι'. Συμβολίζει το φως που καθοδηγεί και τη λάμψη μέσα στο σκοτάδι.", "Συνδεδεμένο με την τέχνη και τον κινηματογράφο, αποπνέει μια αίσθηση διαχρονικής κομψότητας.", "Το αστέρι συμβολίζει τη θεία ελπίδα. Είναι ο φάρος που δείχνει το δρόμο προς την εκπλήρωση των ονείρων.", "Μια Στέλα διακρίνεται για τη λάμψη του χαρακτήρα της και τη δυναμική της παρουσία. Δεν περνά ποτέ απαρατήρητη."]
+            },
+            en: {
+                n: "STELLA",
+                i: '"Stella: The morning star. A name that radiates brilliance, symbolizing guidance, hope, and the eternal beauty of the sky."',
+                b: ["Etymology & Meaning", "Artistic Aura", "Spiritual Meaning", "Personality"],
+                d: ["Derived from the Latin 'stella' (star). It symbolizes the guiding light and brilliance within the darkness.", "Linked to art and cinema, it exudes a sense of timeless elegance.", "The star symbolizes divine hope. It is the beacon showing the way to fulfill one's dreams.", "A Stella is known for her radiant character and dynamic presence. She never goes unnoticed."]
+            },
+            fr: {
+                n: "STELLA",
+                i: '"Stella : l\'étoile du matin. Un nom qui rayonne d\'éclat, symbolisant la guidance, l\'espoir et la beauté éternelle."',
+                b: ["Étymologie", "Aura Artistique", "Signification", "Personnalité"],
+                d: ["Vient du latin 'stella' (étoile). Elle symbolise la lumière qui guide και l'éclat dans l'obscurité.", "Lié à l'art et au cinéma, ce nom dégage une élégance intemporelle.", "L'étoile symbolise l'espoir divin. C'est le phare qui montre le chemin de la réussite.", "Stella se distingue par l'éclat de son caractère και sa présence dynamique."]
+            },
+            de: {
+                n: "STELLA",
+                i: '"Stella: Der Morgenstern. Ein Name, der Glanz ausstrahlt και Führung, Hoffnung sowie Schönheit symbolisiert."',
+                b: ["Etymologie", "Ausstrahlung", "Bedeutung", "Persönlichkeit"],
+                d: ["Vom lateinischen 'stella' (Stern). Er symbolisiert das Licht, das führt, und die Helligkeit στην Nacht.", "Verbunden mit Kunst και Film, strahlt dieser Name zeitlose Eleganz aus.", "Der Stern steht für göttliche Hoffnung. Er ist der Wegweiser zur Erfüllung der Träume.", "Eine Stella besticht durch ihren strahlenden Charakter και ihre Dynamik."]
+            }
+        };
+
+        function L(lang) {
+            cur = lang;
+            document.getElementById('txt-n').innerText = data[lang].n;
+            document.getElementById('txt-i').innerText = data[lang].i;
+            for(let i=0; i<4; i++) { document.getElementById('b'+i).innerText = data[lang].b[i]; }
+            let fls = document.getElementsByClassName('flag-btn');
+            for(let f of fls) { f.classList.remove('active'); }
+            document.getElementById('f-'+lang).classList.add('active');
+        }
+
+        function P(idx) {
+            document.getElementById('p-title').innerText = data[cur].b[idx];
+            document.getElementById('p-desc').innerText = data[cur].d[idx];
+            document.getElementById('overlay').style.display = 'flex';
+        }
+
+        function C() { document.getElementById('overlay').style.display = 'none'; }
+    </script>
+</body>
+</html>
